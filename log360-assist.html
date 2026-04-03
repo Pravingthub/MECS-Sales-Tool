@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log360 Assist</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #f0f2f8;
+  --surface:  #ffffff;
+  --border:   #dde1ee;
+  --border2:  #c8cedf;
+  --uems:     #5b5ef6;
+  --uems-lt:  #eeeeff;
+  --itom:     #00a878;
+  --itom-lt:  #e6f7f3;
+  --sdp:      #f0622a;
+  --sdp-lt:   #fff0eb;
+  --siem:     #8b5cf6;
+  --siem-lt:  #f5f0ff;
+  --text:     #1a1d2e;
+  --muted:    #7b80a0;
+  --muted2:   #a0a4bb;
+  --shadow:   0 2px 12px rgba(26,29,46,0.08);
+  --shadow2:  0 4px 24px rgba(26,29,46,0.13);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(91,94,246,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91,94,246,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+.wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 28px 20px 80px;
+  position: relative;
+}
+
+/* HEADER */
+.header {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.logo { display: flex; align-items: center; gap: 12px; }
+
+.logo-mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #5b5ef6, #7c70ff);
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  font-size: 13px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.logo-name {
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--text);
+  letter-spacing: -0.4px;
+  display: block;
+}
+
+.logo-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 500;
+  margin-top: 2px;
+  display: block;
+}
+
+.header-rule {
+  background: #fff8e0;
+  border: 1.5px solid #f0d060;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #7a5a00;
+}
+
+/* BANNER */
+.banner {
+  background: linear-gradient(130deg, #5b5ef6 0%, #7c70ff 100%);
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: 0 6px 24px rgba(91,94,246,0.28);
+}
+
+.banner-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+
+.banner-title {
+  font-weight: 800;
+  font-size: 14.5px;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.banner-desc {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+/* STEP ROW */
+.step-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+
+.step-num {
+  width: 23px; height: 23px;
+  background: var(--uems);
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.step-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+/* PRODUCTS */
+.product-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.product-btn {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 12px 16px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.17s ease;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.product-btn:hover { transform: translateY(-3px); box-shadow: var(--shadow2); }
+
+.product-btn.active { transform: translateY(-3px); }
+.product-btn.uems.active { border-color: var(--uems); background: var(--uems-lt); box-shadow: 0 0 0 4px rgba(91,94,246,0.14), var(--shadow2); }
+.product-btn.itom.active { border-color: var(--itom); background: var(--itom-lt); box-shadow: 0 0 0 4px rgba(0,168,120,0.14), var(--shadow2); }
+.product-btn.sdp.active  { border-color: var(--sdp);  background: var(--sdp-lt);  box-shadow: 0 0 0 4px rgba(240,98,42,0.14),  var(--shadow2); }
+
+.check-mark {
+  position: absolute;
+  top: 9px; right: 9px;
+  width: 19px; height: 19px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.15s;
+  color: #fff;
+}
+
+.product-btn.uems.active .check-mark { opacity: 1; background: var(--uems); }
+.product-btn.itom.active .check-mark { opacity: 1; background: var(--itom); }
+.product-btn.sdp.active  .check-mark { opacity: 1; background: var(--sdp); }
+
+.product-icon { font-size: 26px; margin-bottom: 10px; display: block; }
+
+.product-name {
+  font-weight: 800;
+  font-size: 15px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.product-btn.uems .product-name { color: var(--uems); }
+.product-btn.itom .product-name { color: var(--itom); }
+.product-btn.sdp  .product-name { color: var(--sdp); }
+
+.product-desc {
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* QUESTIONS */
+.q-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  animation: up 0.25s ease both;
+}
+
+.q-intro {
+  font-size: 12.5px;
+  color: var(--muted);
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.q-intro strong { color: var(--text); }
+
+.q-list { display: flex; flex-direction: column; gap: 8px; }
+
+.q-btn {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.55;
+}
+
+.q-btn.uems-q:hover, .q-btn.uems-q.active { border-color: var(--uems); background: var(--uems-lt); transform: translateX(4px); }
+.q-btn.itom-q:hover, .q-btn.itom-q.active { border-color: var(--itom); background: var(--itom-lt); transform: translateX(4px); }
+.q-btn.sdp-q:hover,  .q-btn.sdp-q.active  { border-color: var(--sdp);  background: var(--sdp-lt);  transform: translateX(4px); }
+
+.q-num {
+  width: 24px; height: 24px;
+  border-radius: 7px;
+  background: var(--border);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all 0.15s;
+}
+
+.q-btn.uems-q.active .q-num { background: var(--uems); color: #fff; }
+.q-btn.itom-q.active .q-num { background: var(--itom); color: #fff; }
+.q-btn.sdp-q.active  .q-num { background: var(--sdp);  color: #fff; }
+
+/* OUTPUT */
+.output-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow2);
+  margin-bottom: 14px;
+  animation: up 0.25s ease both;
+}
+
+.output-top {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.output-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.pill-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+}
+
+.copy-btn {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  padding: 5px 13px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.copy-btn:hover { color: var(--uems); border-color: var(--uems); background: var(--uems-lt); }
+
+/* LANES */
+.lane {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.lane:last-child { border-bottom: none; }
+
+.lane.nosiem-lane { background: #f8fffd; }
+.lane.siem-lane   { background: #faf8ff; }
+.lane.exit-lane   { background: #fffdf0; }
+
+.lane-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.lane-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.chip-nosiem { background: var(--itom-lt); color: var(--itom); border: 1px solid rgba(0,168,120,0.25); }
+.chip-siem   { background: var(--siem-lt); color: var(--siem); border: 1px solid rgba(139,92,246,0.25); }
+.chip-exit   { background: #fff8e0; color: #7a5a00; border: 1px solid #f0d060; }
+
+.lane-situation {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.lane-body {
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.7;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.lane-insert {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  padding: 11px 15px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.lane.nosiem-lane .lane-insert { background: rgba(0,168,120,0.1); color: #005c40; border-left: 3px solid var(--itom); }
+.lane.siem-lane   .lane-insert { background: rgba(139,92,246,0.1); color: #4c1d95; border-left: 3px solid var(--siem); }
+
+.insert-arr { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+
+/* INTEREST */
+.interest-btn {
+  width: 100%;
+  background: var(--surface);
+  border: 2px dashed var(--border2);
+  border-radius: 12px;
+  padding: 15px 20px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+
+.interest-btn:hover:not(:disabled) {
+  border-style: solid;
+  border-color: var(--itom);
+  background: var(--itom-lt);
+  color: var(--itom);
+}
+
+.interest-btn:disabled { opacity: 0.38; cursor: default; }
+
+.interest-result {
+  background: var(--itom-lt);
+  border: 1.5px solid rgba(0,168,120,0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 14px;
+  animation: up 0.2s ease both;
+}
+
+.ir-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--itom);
+  margin-bottom: 8px;
+}
+
+.ir-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #004d38;
+  line-height: 1.65;
+}
+
+/* ANALYTICS */
+.analytics-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  animation: up 0.2s ease both;
+}
+
+.analytics-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.analytics-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+}
+
+.a-clear {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: color 0.15s;
+}
+
+.a-clear:hover { color: var(--sdp); }
+
+.a-rows { display: flex; flex-direction: column; gap: 7px; }
+
+.a-row {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.a-tag {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.a-tag.uems-tag { background: var(--uems-lt); color: var(--uems); }
+.a-tag.itom-tag { background: var(--itom-lt); color: var(--itom); }
+.a-tag.sdp-tag  { background: var(--sdp-lt);  color: var(--sdp); }
+
+.a-label { font-size: 11.5px; font-weight: 500; color: var(--text); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.a-bar-wrap { width: 70px; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+.a-bar { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+
+.a-count { font-size: 12px; font-weight: 700; min-width: 26px; text-align: right; font-family: 'JetBrains Mono', monospace; }
+
+/* FOOTER */
+.footer {
+  background: var(--text);
+  border-radius: 14px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: var(--shadow2);
+}
+
+.footer-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+
+.footer-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+}
+
+.footer-text strong { color: #fff; font-weight: 700; }
+
+.hidden { display: none !important; }
+
+@keyframes up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-mark">L3</div>
+      <div>
+        <span class="logo-name">Log360 Assist</span>
+        <span class="logo-sub">ManageEngine Sales · Live Call Tool</span>
+      </div>
+    </div>
+    <div class="header-rule">⚡ Max 30 sec on Log360</div>
+  </div>
+
+  <!-- HOW TO USE BANNER -->
+  <div class="banner">
+    <div class="banner-icon">🎯</div>
+    <div>
+      <div class="banner-title">How to use this during your call</div>
+      <div class="banner-desc">Pick the product they use → choose one probing question → read the script. Don't explain Log360. Don't pitch SIEM. One question, one thought, move on.</div>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step-row">
+    <div class="step-num">1</div>
+    <div class="step-label">What ManageEngine product are they currently using?</div>
+  </div>
+
+  <div class="product-grid">
+    <button class="product-btn uems" onclick="selectProduct('uems', this)">
+      <div class="check-mark">✓</div>
+      <span class="product-icon">🖥️</span>
+      <span class="product-name">UEMS</span>
+      <span class="product-desc">Endpoint & device management</span>
+    </button>
+    <button class="product-btn itom" onclick="selectProduct('itom', this)">
+      <div class="check-mark">✓</div>
+      <span class="product-icon">🌐</span>
+      <span class="product-name">ITOM</span>
+      <span class="product-desc">Network & infra monitoring</span>
+    </button>
+    <button class="product-btn sdp" onclick="selectProduct('sdp', this)">
+      <div class="check-mark">✓</div>
+      <span class="product-icon">🎫</span>
+      <span class="product-name">SDP</span>
+      <span class="product-desc">Service desk & ticketing</span>
+    </button>
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="questionsSection" class="hidden">
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-label">Pick ONE question — whichever fits the conversation naturally</div>
+    </div>
+
+    <div class="q-wrap">
+      <div class="q-intro">
+        All three questions expose the same gap. <strong>Pick the one that flows most naturally</strong> from what they're already saying. Ask it casually — don't signal that you're reading anything.
+      </div>
+      <div id="questionsList" class="q-list"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div id="outputSection" class="hidden">
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-label">Read this — based on what they say back</div>
+    </div>
+
+    <div class="output-card">
+      <div class="output-top">
+        <div class="output-pill">
+          <div class="pill-dot" id="pillDot"></div>
+          <span id="outputLabel">Script</span>
+        </div>
+        <button class="copy-btn" onclick="copyAll()">📋 Copy Script</button>
+      </div>
+      <div id="outputBody"></div>
+    </div>
+
+    <button class="interest-btn" id="interestedBtn" onclick="markInterested()">
+      🟢 &nbsp;They seem interested — what do I say next?
+    </button>
+
+    <div id="interestedResult" class="interest-result hidden">
+      <div class="ir-label">✦ Next Move</div>
+      <div class="ir-text">
+        "That's great to hear. Would it make sense to find 15 minutes separately?<br>
+        I can show you exactly how this maps to your setup — no pitch, just a quick look at the fit."
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div id="analyticsSection" class="analytics-card hidden">
+    <div class="analytics-head">
+      <div class="analytics-title">📊 Question Usage — What's getting clicked</div>
+      <button class="a-clear" onclick="clearAnalytics()">Clear data</button>
+    </div>
+    <div id="analyticsRows" class="a-rows"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-icon">🧠</div>
+    <div class="footer-text">
+      <strong>The rule:</strong> Don't sell Log360. Don't explain SIEM. Ask one question, drop one thought, and move on.
+      If you're still talking about it after 30 seconds — you've gone too far.
+    </div>
+  </div>
+
+</div>
+
+<script>
+const data = {
+  uems: {
+    label: 'UEMS → Log360',
+    color: '#5b5ef6',
+    questions: [
+      {
+        q: "You're managing all devices and users centrally — but if someone started misusing their access right now, would your team catch it before it caused damage?",
+        nosiem: {
+          situation: "They say no, not really, or they're unsure",
+          say: "That's the honest gap most UEMS customers sit with — device management is tight, but detecting what's happening inside those devices is a completely different challenge.",
+          insert: "Log360 fills exactly that. Insider threat, lateral movement, suspicious access patterns — it uses the same endpoint data UEMS already collects. No new agents, no new team required."
+        },
+        siem: {
+          situation: "They mention they already have a SIEM or security tooling",
+          say: "That's good to have. Most SIEMs do a decent job at the perimeter — but endpoint-level user behaviour is consistently where they fall short.",
+          insert: "Log360 covers that specific gap. Identity correlation, endpoint activity mapping, and access anomaly detection — all without rebuilding what's already working."
+        }
+      },
+      {
+        q: "If a user's credentials were compromised today — how quickly would your team actually find out?",
+        nosiem: {
+          situation: "They say it would take time, or they honestly don't know",
+          say: "That's the most common answer we hear — and it's not a people failure, it's a visibility gap. UEMS is built for device control, not for catching credential misuse in real time.",
+          insert: "That's what Log360 handles. Continuous monitoring of user behaviour, access patterns, and device activity — so a compromise gets flagged in minutes instead of days."
+        },
+        siem: {
+          situation: "They say their SIEM or SOC handles alerts",
+          say: "Good to have that alerting layer. The follow-up question is whether those alerts carry endpoint context — where the user was, what they touched, what device they were on when it happened.",
+          insert: "Log360 adds that endpoint context to every alert. It makes your existing SIEM more actionable — less noise, more signal."
+        }
+      },
+      {
+        q: "When a device falls out of patch compliance or starts behaving strangely — is that purely an IT helpdesk issue, or does it also get reviewed from a security angle?",
+        nosiem: {
+          situation: "They treat it entirely as an IT operations or helpdesk issue",
+          say: "Most teams do — and that's exactly the blind spot attackers rely on. Unpatched devices and compliance drift are entry points for the majority of incidents we see.",
+          insert: "Log360 bridges those two layers. Operational events from UEMS automatically feed into security context — so your team gets the full picture without having to switch tools or escalate manually."
+        },
+        siem: {
+          situation: "They say their security team or SIEM handles that separately",
+          say: "The hand-off between IT ops and security is usually where things get lost — by the time a compliance issue escalates to a security concern, the window has already passed.",
+          insert: "Log360 integrates that data flow natively. UEMS compliance events, device anomalies, and security correlation in one place — no gap in between."
+        }
+      }
+    ]
+  },
+
+  itom: {
+    label: 'ITOM → Log360',
+    color: '#00a878',
+    questions: [
+      {
+        q: "When you get an outage or performance alert — is there a fast way to tell if it's a configuration issue or something that a person caused intentionally?",
+        nosiem: {
+          situation: "They say no, or they always treat it as a performance problem first",
+          say: "That's very common — ITOM tools are brilliant at telling you something broke. But they weren't built to tell you why it broke, or whether someone caused it deliberately.",
+          insert: "Log360 adds that security layer. It correlates infrastructure logs with security events to separate performance noise from actual incidents — automatically, in the same timeline."
+        },
+        siem: {
+          situation: "They say their security team investigates separately after an alert",
+          say: "That hand-off is usually the problem. By the time it's escalated to security, the logs have rolled, the context is partial, and the investigation starts cold.",
+          insert: "Log360 keeps ITOM data and security context together. Faster triage, cleaner root cause — especially for events that sit on the boundary between ops and security."
+        }
+      },
+      {
+        q: "If traffic suddenly spikes on a critical server at 2 AM — how does your team tell the difference between a capacity issue and something hostile?",
+        nosiem: {
+          situation: "They rely on performance thresholds and paging the on-call person",
+          say: "Performance thresholds are good for operations — but they're blind to intent. A slow server and a compromised server can look completely identical from an ITOM perspective.",
+          insert: "Log360 brings the intent layer. Anomaly detection sits on top of your existing infrastructure data — the same alert now tells you whether it's worth waking the security team, not just the ops team."
+        },
+        siem: {
+          situation: "They say their SIEM picks up network anomalies",
+          say: "Network-level signals are there — but correlating them with actual infrastructure performance data is usually a manual exercise that happens after the fact.",
+          insert: "Log360 automates that correlation. ITOM events and security signals in a single timeline — so the answer is there before the investigation has even started."
+        }
+      },
+      {
+        q: "For incident reviews or audits — when someone asks what happened on a specific system three months ago, how long does piecing that story together typically take?",
+        nosiem: {
+          situation: "They say hours, or it involves multiple teams pulling from different places",
+          say: "That's the hidden cost of siloed data — everything exists somewhere, but pulling it into a coherent timeline is slow and happens under pressure.",
+          insert: "Log360 centralises that. Infrastructure logs, access events, and security context in one searchable view. Investigations that used to take a day become a 10-minute lookup."
+        },
+        siem: {
+          situation: "They say their SIEM handles log collection and retention",
+          say: "Log collection is the first step — but whether those logs tell a useful story for an auditor or incident reviewer under pressure is a different question.",
+          insert: "Log360 layers context and correlation on top of log collection. The story is already built when you need it — not assembled manually under a deadline."
+        }
+      }
+    ]
+  },
+
+  sdp: {
+    label: 'SDP → Log360',
+    color: '#f0622a',
+    questions: [
+      {
+        q: "Security incidents — do they typically show up as user tickets, or does your team have a way to detect things before someone has to report a problem?",
+        nosiem: {
+          situation: "They say most things come in as tickets or user reports",
+          say: "That's the reality for most service desk teams — you're reactive by design. That works perfectly for IT operations. But security incidents don't wait to be reported, and by the time a ticket exists, the damage is usually already done.",
+          insert: "Log360 moves detection earlier. It watches for signals before tickets get created — unusual access, policy violations, behaviour changes — and surfaces them automatically."
+        },
+        siem: {
+          situation: "They say their security team or SIEM handles that detection",
+          say: "Good to have that layer. The gap we consistently see is that SDP data and SIEM data live separately — so when an incident ticket is raised, the helpdesk context isn't in the security tool.",
+          insert: "Log360 brings those together. Security alerts that already carry ticket history, change records, and user context — so the response is faster and the investigation starts with the full picture."
+        }
+      },
+      {
+        q: "When a change gets pushed and something breaks security-wise — how long does it typically take to trace it back to what caused it?",
+        nosiem: {
+          situation: "They say it's slow, manual, or involves going across multiple systems",
+          say: "That correlation gap is where most security incidents drag on — change records live in SDP, security logs are somewhere else, and someone is manually stitching the timeline together under pressure.",
+          insert: "Log360 connects those automatically. Change event from SDP, anomaly detection from the security layer, root cause in one view. What takes a day becomes a 10-minute lookup."
+        },
+        siem: {
+          situation: "They say their SIEM captures security events, including around changes",
+          say: "Security events are captured — but whether the SIEM knows which SDP change triggered it is usually a manual annotation job that depends on someone remembering to link it.",
+          insert: "Log360 integrates SDP change data natively. Every security event already has its change context attached — no reconstruction needed after the fact."
+        }
+      },
+      {
+        q: "When an audit comes in — IT access reviews, compliance checks — how much time does your team end up spending just pulling that data together?",
+        nosiem: {
+          situation: "They say it's manual work, pulling from multiple systems",
+          say: "Audit prep is the work nobody budgets for — but it lands on the team every single time. And SDP data alone never tells the full story for a security audit. It's always 'SDP plus three other places'.",
+          insert: "Log360 puts the full picture in one place. Access events, change history, security incidents, compliance posture — all query-ready. Audit prep that used to take days takes hours."
+        },
+        siem: {
+          situation: "They mention their SIEM has compliance reporting built in",
+          say: "SIEM compliance reports cover the security events — but auditors also want the operational context. Who raised the change? Who approved it? What ticket was it tied to?",
+          insert: "Log360 connects both layers. SDP operational records and security event data in a single audit view — the full story, not just the security slice."
+        }
+      }
+    ]
+  }
+};
+
+let currentProduct = null;
+let currentQIndex  = null;
+let interestedUsed = false;
+let analytics = {};
+
+try { analytics = JSON.parse(localStorage.getItem('l360_analytics') || '{}'); } catch(e) {}
+
+function selectProduct(prod, el) {
+  document.querySelectorAll('.product-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  currentProduct = prod;
+  currentQIndex  = null;
+  interestedUsed = false;
+  const ib = document.getElementById('interestedBtn');
+  if (ib) ib.disabled = false;
+  const ir = document.getElementById('interestedResult');
+  if (ir) ir.classList.add('hidden');
+  document.getElementById('outputSection').classList.add('hidden');
+  renderQuestions();
+}
+
+function renderQuestions() {
+  const prod = data[currentProduct];
+  const list = document.getElementById('questionsList');
+  list.innerHTML = '';
+  prod.questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.className = `q-btn ${currentProduct}-q`;
+    btn.innerHTML = `<span class="q-num">${i + 1}</span><span>${q.q}</span>`;
+    btn.addEventListener('click', () => selectQuestion(i, btn));
+    list.appendChild(btn);
+  });
+  document.getElementById('questionsSection').classList.remove('hidden');
+  renderAnalytics();
+}
+
+function selectQuestion(idx, el) {
+  document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  currentQIndex = idx;
+  track(currentProduct, idx);
+  renderOutput();
+}
+
+function renderOutput() {
+  const prod = data[currentProduct];
+  const q    = prod.questions[currentQIndex];
+
+  document.getElementById('outputLabel').textContent = prod.label;
+  document.getElementById('pillDot').style.background = prod.color;
+
+  document.getElementById('outputBody').innerHTML = `
+    <div class="lane nosiem-lane">
+      <div class="lane-top">
+        <div class="lane-chip chip-nosiem">✓ No SIEM in place</div>
+        <div class="lane-situation">They say: "${q.nosiem.situation}"</div>
+      </div>
+      <div class="lane-body">${q.nosiem.say}</div>
+      <div class="lane-insert"><span class="insert-arr">→</span><span>${q.nosiem.insert}</span></div>
+    </div>
+
+    <div class="lane siem-lane">
+      <div class="lane-top">
+        <div class="lane-chip chip-siem">◆ Already have a SIEM</div>
+        <div class="lane-situation">They say: "${q.siem.situation}"</div>
+      </div>
+      <div class="lane-body">${q.siem.say}</div>
+      <div class="lane-insert"><span class="insert-arr">→</span><span>${q.siem.insert}</span></div>
+    </div>
+
+    <div class="lane exit-lane">
+      <div class="lane-top">
+        <div class="lane-chip chip-exit">↩ Always end with this exit line</div>
+      </div>
+      <div class="lane-body">"Anyway — not something you need to act on right now. Just worth keeping in mind as your environment grows."</div>
+    </div>
+  `;
+
+  document.getElementById('outputSection').classList.remove('hidden');
+  renderAnalytics();
+}
+
+function markInterested() {
+  if (interestedUsed) return;
+  interestedUsed = true;
+  document.getElementById('interestedBtn').disabled = true;
+  document.getElementById('interestedResult').classList.remove('hidden');
+}
+
+function copyAll() {
+  if (currentQIndex === null || !currentProduct) return;
+  const q = data[currentProduct].questions[currentQIndex];
+  const txt = `QUESTION:\n"${q.q}"\n\nIF NO SIEM:\n${q.nosiem.say}\n→ ${q.nosiem.insert}\n\nIF THEY HAVE A SIEM:\n${q.siem.say}\n→ ${q.siem.insert}\n\nEXIT LINE:\n"Anyway — not something you need to act on right now. Just worth keeping in mind as your environment grows."`;
+  navigator.clipboard.writeText(txt).then(() => {
+    const b = document.querySelector('.copy-btn');
+    b.textContent = '✓ Copied!';
+    setTimeout(() => b.textContent = '📋 Copy Script', 2000);
+  }).catch(() => {});
+}
+
+function track(prod, idx) {
+  const k = `${prod}_${idx}`;
+  analytics[k] = (analytics[k] || 0) + 1;
+  try { localStorage.setItem('l360_analytics', JSON.stringify(analytics)); } catch(e) {}
+}
+
+function renderAnalytics() {
+  const sec  = document.getElementById('analyticsSection');
+  const rows = document.getElementById('analyticsRows');
+  const entries = Object.entries(analytics).filter(([k]) => {
+    const [p, i] = k.split('_');
+    return data[p]?.questions[parseInt(i)];
+  });
+  if (!entries.length) { sec.classList.add('hidden'); return; }
+  sec.classList.remove('hidden');
+  const max = Math.max(...entries.map(([,v]) => v));
+  entries.sort((a, b) => b[1] - a[1]);
+  rows.innerHTML = entries.map(([k, count]) => {
+    const [p, i] = k.split('_');
+    const q = data[p].questions[parseInt(i)];
+    const short = q.q.length > 58 ? q.q.slice(0, 58) + '…' : q.q;
+    const pct   = Math.round((count / max) * 100);
+    const col   = data[p].color;
+    return `<div class="a-row">
+      <div class="a-tag ${p}-tag">${p.toUpperCase()}</div>
+      <div class="a-label">${short}</div>
+      <div class="a-bar-wrap"><div class="a-bar" style="width:${pct}%;background:${col};"></div></div>
+      <div class="a-count" style="color:${col};">${count}×</div>
+    </div>`;
+  }).join('');
+}
+
+function clearAnalytics() {
+  analytics = {};
+  try { localStorage.removeItem('l360_analytics'); } catch(e) {}
+  renderAnalytics();
+}
+
+renderAnalytics();
+</script>
+</body>
+</html>
